@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <!-- Check Icon -->
+  <symbol id="check-rounded" viewBox="0 0 24 24"><path fill="currentColor" d="m9.55 15.15l8.475-8.475q.3-.3.7-.3t.7.3t.3.713t-.3.712l-9.175 9.2q-.3.3-.7.3t-.7-.3L4.55 13q-.3-.3-.288-.712t.313-.713t.713-.3t.712.3z"/></symbol>
+  <symbol id="arrow-left" viewBox="0 0 24 24"><path fill="currentColor" d="M12.29 8.71L9.7 11.3a.996.996 0 0 0 0 1.41l2.59 2.59c.63.63 1.71.18 1.71-.71V9.41c0-.89-1.08-1.33-1.71-.7"/></symbol>
+  <symbol id="arrow-right" viewBox="0 0 24 24"><path fill="currentColor" d="m11.71 15.29l2.59-2.59a.996.996 0 0 0 0-1.41L11.71 8.7c-.63-.62-1.71-.18-1.71.71v5.17c0 .9 1.08 1.34 1.71.71"/></symbol>
+</svg>
