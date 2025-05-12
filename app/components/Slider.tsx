@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo, useState } from "react";
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import SVGIcon from "./SVGIcon";
 
 interface SliderProps {
@@ -25,22 +25,36 @@ const Slider: React.FC<SliderProps> = ({
 }) => {
   const id = `slider-${React.useId()}`;
   const [value, setValue] = useState(defaultValue);
-  const fillWidth = useMemo(() => {
-    return value !== undefined
-      ? ((value - min) / (max - min)) * 100
-      : ((defaultValue - min) / (max - min)) * 100;
-  }, [value]);
+  const [parentWidth, setParentWidth] = useState<number>(0);
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setValue(+e.target.value);
     onChange(e.target.value);
   };
 
-  // const handleOnDragStart = (
-  //   e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>
-  // ) => {
-  //   setValue(Number((e.target as HTMLInputElement).value));
-  // };
+  const parentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const parent = parentRef.current;
+    if (!parent) return;
+
+    const updateWidth = () => {
+      setParentWidth(parent.getBoundingClientRect().width);
+    };
+
+    updateWidth();
+
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(parent);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  const fillWidth = useMemo(() => {
+    return value !== undefined
+      ? ((value - min) / (max - min)) * parentWidth + 32
+      : ((defaultValue - min) / (max - min)) * parentWidth + 32;
+  }, [value]);
 
   return (
     <div className={`slider-container ${className || ""}`}>
@@ -49,16 +63,18 @@ const Slider: React.FC<SliderProps> = ({
           {label}
         </label>
       )}
-      <div className="slider">
+      <div className="slider" ref={parentRef}>
         <div className="slider-track">
-          <span className="slider-fill" style={{ width: `${fillWidth}%` }} />
+          <span
+            className="slider-fill"
+            style={{ transform: `translateX(${fillWidth}px)` }}
+          />
         </div>
         <input
           type="range"
           defaultValue={defaultValue}
           value={value}
           onChange={handleChange}
-          // onMouseMove={handleOnDragStart}
           disabled={disabled}
           id={id}
           className="slider-input"
@@ -71,9 +87,10 @@ const Slider: React.FC<SliderProps> = ({
           aria-valuenow={value ?? defaultValue}
         />
         <div
-          className="slider-thumb hover:drop-shadow-md"
+          className="slider-thumb"
           style={{
-            left: `calc(${fillWidth}% - 12px)`,
+            pointerEvents: "none",
+            transform: `translateX(${fillWidth}px)`,
           }}
         >
           <SVGIcon
